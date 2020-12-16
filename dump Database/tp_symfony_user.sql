@@ -1,0 +1,1 @@
+insert into tp_symfony.user (id, email, roles, password) values (3, 'come.de-mauroy@next-u.fr', '["ROLE_ADMIN"]', '$argon2id$v=19$m=65536,t=4,p=1$QVVxai9WME93TWM2dHE0NQ$53ENrhGRGjtH2HMWovvfj+AC0m04+B5yuRo9gVkMzpQ');
