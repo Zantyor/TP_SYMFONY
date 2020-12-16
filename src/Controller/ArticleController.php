@@ -7,11 +7,16 @@ use App\Entity\Comment;
 use App\Form\ArticleType;
 use App\Form\CommentType;
 use App\Repository\ArticleRepository;
+use App\Repository\UserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
+
 
 /**
  * @Route("/article")
@@ -115,9 +120,12 @@ class ArticleController extends AbstractController
      * @Route("/{id}/comment", name="article_comment", methods={"GET","POST"})
      * @param Request $request
      * @param Article $article
+     * @param MailerInterface $mailer
+     * @param UserRepository $userRepository
      * @return Response
+     * @throws TransportExceptionInterface
      */
-    public function comment(Request $request, Article $article): Response
+    public function comment(Request $request, Article $article, MailerInterface $mailer, UserRepository $userRepository): Response
     {
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
@@ -130,6 +138,14 @@ class ArticleController extends AbstractController
             $em->flush();
             $article->addComment($comment);
 
+
+            $email = (new Email())
+                ->from('automated.mailer@article.com')
+                ->to($_ENV['MAILER_RECEIVER'])
+                ->subject('Time for Symfony Mailer!')
+                ->text('A new Comment has been written under your article !')
+                ->html('<p>A new comment has been written under one of your article ! Go check it out !</p>');
+            $mailer->send($email);
             return $this->redirectToRoute('article_index');
         }
 
