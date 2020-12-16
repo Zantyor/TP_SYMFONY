@@ -30,6 +30,8 @@
                 <td>
                     <a href="{{ path('article_show', {'id': article.id}) }}">show</a>
                     <a href="{{ path('article_edit', {'id': article.id}) }}">edit</a>
+                    <a href="{{ path('article_comment', {'id': article.id}) }}">comment</a>
+
                 </td>
             </tr>
         {% else %}
